@@ -1,0 +1,218 @@
+/* pages/map/index.wxss */
+/* 页面整体 */
+page {
+  height: 100%;
+  background: #f5f5f5;
+}
+
+/* 顶部栏 */
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(8px);
+}
+
+.city-selector {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.city-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.arrow {
+  font-size: 10px;
+  color: #999;
+  margin-left: 4px;
+}
+
+.layer-tabs {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.layer-tab {
+  padding: 5px 14px;
+  font-size: 13px;
+  border-radius: 16px;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.layer-tab.active {
+  background: #FF8C42;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 地图容器 */
+.map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* 底部控制按钮 */
+.map-controls {
+  position: absolute;
+  bottom: 120px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.location-btn {
+  width: 48px;
+  height: 48px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.publish-btn {
+  width: 56px;
+  height: 56px;
+  background: #FF8C42;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(255, 140, 66, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 11px;
+}
+
+.publish-btn .icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* 详情弹窗 */
+.detail-popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.detail-popup.show {
+  transform: translateY(0);
+}
+
+.detail-popup::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: -1;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 24px 30px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.popup-close {
+  float: right;
+  font-size: 20px;
+  color: #999;
+  padding: 4px 8px;
+}
+
+.popup-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 4px;
+  padding-right: 32px;
+}
+
+.popup-address {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.popup-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag {
+  padding: 2px 12px;
+  background: #f0f7ff;
+  color: #4A90D9;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.popup-info {
+  padding: 12px 0;
+  border-top: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.8;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.popup-actions button {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 15px;
+  border: none;
+  outline: none;
+}
+
+.btn-nav {
+  background: #FF8C42;
+  color: #fff;
+}
+
+.btn-report {
+  background: #f5f5f5;
+  color: #666;
+}

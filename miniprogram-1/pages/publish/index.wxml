@@ -1,0 +1,86 @@
+<!--pages/publish/index.wxml-->
+<!-- 顶部提示 -->
+<view class="tips-bar">
+  <text class="tips-icon">📌</text>
+  <text class="tips-text">分享你发现的养宠信息，帮助更多迁徙宠友</text>
+</view>
+
+<!-- 标注类型选择 -->
+<view class="form-section">
+  <view class="section-title">标注类型 <text class="required">*</text></view>
+  <view class="type-grid">
+    <view class="type-item {{formData.type === 'living' ? 'active' : ''}}" 
+          bindtap="selectType" data-type="living">
+      <text class="type-icon">🏠</text>
+      <text class="type-label">居住友好</text>
+    </view>
+    <view class="type-item {{formData.type === 'facility' ? 'active' : ''}}" 
+          bindtap="selectType" data-type="facility">
+      <text class="type-icon">🏪</text>
+      <text class="type-label">便利设施</text>
+    </view>
+    <view class="type-item {{formData.type === 'safety' ? 'active' : ''}}" 
+          bindtap="selectType" data-type="safety">
+      <text class="type-icon">⚠️</text>
+      <text class="type-label">安全预警</text>
+    </view>
+  </view>
+</view>
+
+<!-- 位置信息 -->
+<view class="form-section">
+  <view class="section-title">位置信息 <text class="required">*</text></view>
+  <view class="location-box" bindtap="chooseLocation">
+    <view class="location-icon">📍</view>
+    <view class="location-detail">
+      <view class="location-name">{{formData.name || '点击选择地点'}}</view>
+      <view class="location-address">{{formData.address || '请在地图上选点或搜索'}}</view>
+    </view>
+    <view class="location-arrow">›</view>
+  </view>
+  <view class="location-coords" wx:if="{{formData.latitude}}">
+    <text>经度：{{formData.longitude}}</text>
+    <text>纬度：{{formData.latitude}}</text>
+  </view>
+</view>
+
+<!-- 描述 -->
+<view class="form-section">
+  <view class="section-title">详细描述 <text class="required">*</text></view>
+  <textarea class="desc-textarea" 
+            placeholder="请描述该地点的具体信息（如：可养大型犬、发生过投毒等）" 
+            maxlength="500"
+            value="{{formData.description}}"
+            bindinput="onDescInput"/>
+  <view class="char-count">{{formData.description.length}}/500</view>
+</view>
+
+<!-- 图片上传 -->
+<view class="form-section">
+  <view class="section-title">现场照片（选填）</view>
+  <view class="image-grid">
+    <view class="image-item" wx:for="{{formData.images}}" wx:key="index">
+      <image src="{{item}}" mode="aspectFill"></image>
+      <view class="image-delete" data-index="{{index}}" bindtap="deleteImage">✕</view>
+    </view>
+    <view class="image-upload" wx:if="{{formData.images.length < 6}}" bindtap="uploadImage">
+      <text class="upload-icon">+</text>
+      <text class="upload-text">添加图片</text>
+    </view>
+  </view>
+  <view class="image-hint">最多上传6张，每张不超过5MB</view>
+</view>
+
+<!-- 匿名选项 -->
+<view class="form-section">
+  <view class="switch-row">
+    <text class="switch-label">匿名发布</text>
+    <switch checked="{{formData.isAnonymous}}" bindchange="toggleAnonymous" color="#FF8C42"/>
+  </view>
+  <view class="switch-hint">开启后，其他用户将看不到你的昵称和头像</view>
+</view>
+
+<!-- 提交按钮 -->
+<view class="submit-area">
+  <button class="submit-btn" bindtap="submitAnnotation">提交标注</button>
+</view>

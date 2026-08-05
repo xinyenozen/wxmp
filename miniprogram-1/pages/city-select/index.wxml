@@ -1,0 +1,31 @@
+<!--pages/city-select/index.wxml-->
+<!-- 搜索框 -->
+<view class="search-bar">
+  <view class="search-input">
+    <text class="search-icon">🔍</text>
+    <input class="search-field" placeholder="搜索城市名称" value="{{keyword}}" bindinput="onSearchInput" />
+    <text class="search-clear" wx:if="{{keyword}}" bindtap="clearSearch">✕</text>
+  </view>
+</view>
+
+<!-- 城市列表 -->
+<scroll-view class="city-list" scroll-y scroll-into-view="{{scrollToId}}">
+  <view wx:if="{{filteredCities.length > 0}}">
+    <view class="city-group" wx:for="{{filteredCities}}" wx:key="letter">
+      <view class="group-title" id="group-{{item.letter}}">{{item.letter}}</view>
+      <view class="city-item" wx:for="{{item.cities}}" wx:key="name" bindtap="selectCity" data-city="{{item.name}}">
+        <text class="city-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="empty-tip">
+    <text>未找到匹配城市</text>
+  </view>
+</scroll-view>
+
+<!-- 右侧字母索引 -->
+<view class="index-side" wx:if="{{!keyword}}">
+  <view class="index-letter" wx:for="{{indexLetters}}" wx:key="*this" bindtap="scrollToLetter" data-letter="{{item}}">
+    {{item}}
+  </view>
+</view>
