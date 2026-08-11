@@ -1,0 +1,142 @@
+/* pages/poi-detail/index.wxss */
+page {
+  background: #f6f7fb;
+  padding-bottom: 80px;
+}
+
+/* 头部横幅 */
+.header-banner {
+  padding: 30px 20px 20px;
+  color: #fff;
+  border-radius: 0 0 24px 24px;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.name {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.address {
+  font-size: 14px;
+  opacity: 0.85;
+  display: block;
+}
+
+/* 详情区域 */
+.detail-section {
+  margin: -12px 16px 0;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tag {
+  padding: 4px 14px;
+  background: #f0f7ff;
+  color: #4A90D9;
+  border-radius: 16px;
+  font-size: 13px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8f8f8;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #888;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #333;
+  text-align: right;
+  max-width: 70%;
+}
+
+.info-value.allowed {
+  color: #4CAF50;
+}
+
+.info-value.not-allowed {
+  color: #F44336;
+}
+
+.verify-passed {
+  color: #4CAF50;
+}
+
+.verify-pending {
+  color: #FF9800;
+}
+
+/* 底部按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 12px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+  z-index: 50;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 0;
+  background: #f5f5f5;
+  border-radius: 12px;
+  font-size: 16px;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.action-btn:active {
+  transform: scale(0.96);
+}
+
+.action-btn.primary {
+  background: #FF8C42;
+  color: #fff;
+}
+
+.btn-icon {
+  font-size: 20px;
+}

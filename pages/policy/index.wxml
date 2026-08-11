@@ -1,0 +1,111 @@
+<!--pages/policy/list.wxml-->
+<!-- ==================== 顶部：城市选择 ==================== -->
+<view class="header">
+  <view class="city-selector" bindtap="onSelectCity">
+    <text class="city-name">{{currentCity}}</text>
+    <text class="arrow">▼</text>
+  </view>
+  <view class="header-tip">
+    <text>🐾 查看各城市养宠政策，提前避坑</text>
+  </view>
+</view>
+
+<!-- ==================== 数据存在时显示 ==================== -->
+<block wx:if="{{policyData}}">
+  <!-- 摘要卡 -->
+  <view class="summary-card">
+    <view class="summary-title">📋 {{currentCity}} · 政策速览</view>
+    <view class="summary-content">{{policyData.summary}}</view>
+    <view class="summary-tags">
+      <text class="tag tag-danger">禁养 {{policyData.bannedBreeds.length}} 种</text>
+      <text class="tag tag-warning">{{policyData.fee.includes('免费') ? '免费登记' : '需缴费'}}</text>
+    </view>
+  </view>
+
+  <!-- 政策详情列表 -->
+  <view class="policy-list">
+    <!-- 禁养犬种 -->
+    <view class="policy-card" bindtap="showDetail" data-type="banned">
+      <view class="card-header">
+        <text class="card-icon">🚫</text>
+        <text class="card-title">禁养犬种</text>
+        <text class="card-badge">{{policyData.bannedBreeds.length}}种</text>
+      </view>
+      <view class="card-content">
+        <text class="breed-tag" wx:for="{{policyData.bannedBreeds}}" wx:key="index">{{item}}</text>
+        <text class="more-text" wx:if="{{policyData.bannedBreeds.length > 6}}">...</text>
+      </view>
+      <view class="card-footer">点击查看完整清单 ›</view>
+    </view>
+
+    <!-- 限养区域 -->
+    <view class="policy-card" bindtap="showDetail" data-type="area">
+      <view class="card-header">
+        <text class="card-icon">📍</text>
+        <text class="card-title">限养/重点管理区域</text>
+      </view>
+      <view class="card-content">
+        <text>{{policyData.restrictedAreas}}</text>
+      </view>
+      <view class="card-footer">点击查看详情 ›</view>
+    </view>
+
+    <!-- 登记流程 -->
+    <view class="policy-card" bindtap="showDetail" data-type="process">
+      <view class="card-header">
+        <text class="card-icon">📝</text>
+        <text class="card-title">登记流程与费用</text>
+        <text class="card-badge" style="background:#4CAF50;">{{policyData.fee.includes('免费') ? '免费' : '收费'}}</text>
+      </view>
+      <view class="card-content">
+        <text class="process-text">{{policyData.registerProcess.split('\n')[0]}}...</text>
+      </view>
+      <view class="card-footer">点击查看完整流程 ›</view>
+    </view>
+
+    <!-- 违规处罚 -->
+    <view class="policy-card" bindtap="showDetail" data-type="penalty">
+      <view class="card-header">
+        <text class="card-icon">⚖️</text>
+        <text class="card-title">违规处罚标准</text>
+      </view>
+      <view class="card-content">
+        <text class="penalty-text">{{policyData.penalty}}</text>
+      </view>
+      <view class="card-footer">点击查看详情 ›</view>
+    </view>
+  </view>
+</block>
+
+<!-- ==================== 数据不存在时显示（空状态） ==================== -->
+<view wx:else class="empty-state">
+  <text class="empty-icon">🗺️</text>
+  <text class="empty-text">暂无该城市政策数据</text>
+  <text class="empty-hint">请切换其他城市查看</text>
+</view>
+
+<!-- ==================== 底部操作栏 ==================== -->
+<view class="bottom-actions">
+  <view class="action-btn" bindtap="goToCompare">
+    <text class="btn-text">多城市对比</text>
+  </view>
+  <view class="action-btn primary" bindtap="goToCorrect">
+    <text class="btn-text">纠错反馈</text>
+  </view>
+</view>
+
+<!-- ==================== 政策详情弹窗 ==================== -->
+<view class="detail-mask {{showDetailModal ? 'show' : ''}}" bindtap="closeModal">
+  <view class="detail-modal" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">{{detailTitle}}</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <text class="modal-text">{{detailContent}}</text>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn" bindtap="closeModal">我知道了</button>
+    </view>
+  </view>
+</view>

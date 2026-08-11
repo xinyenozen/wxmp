@@ -1,0 +1,83 @@
+/* pages/route/result/index.wxss */
+page {
+  background: #f6f7fb;
+  padding: 16px;
+  padding-bottom: 80px;
+}
+
+.container {
+  max-width: 100%;
+}
+
+.header {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  padding: 20px;
+  border-radius: 16px;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.from-to {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.pet-info {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.card-body {
+  font-size: 15px;
+  color: #444;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.line {
+  display: block;
+  padding: 2px 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn.primary {
+  background: #FF8C42;
+  color: #fff;
+}
+
+.btn:active {
+  opacity: 0.7;
+}

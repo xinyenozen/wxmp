@@ -1,0 +1,66 @@
+<!--pages/map/index.wxml-->
+<!-- 顶部：城市选择 + 图层切换 -->
+<view class="header">
+  <view class="city-selector" bindtap="onSelectCity">
+    <text class="city-name">{{currentCity}}</text>
+    <text class="arrow">▼</text>
+  </view>
+  <view class="layer-tabs">
+    <view class="layer-tab {{currentLayer === 'living' ? 'active' : ''}}" 
+          bindtap="switchLayer" data-layer="living">居住</view>
+    <view class="layer-tab {{currentLayer === 'facility' ? 'active' : ''}}" 
+          bindtap="switchLayer" data-layer="facility">设施</view>
+    <view class="layer-tab {{currentLayer === 'safety' ? 'active' : ''}}" 
+          bindtap="switchLayer" data-layer="safety">安全</view>
+  </view>
+</view>
+
+<!-- 地图主体 -->
+<map id="map"
+     class="map-container"
+     longitude="{{centerLongitude}}"
+     latitude="{{centerLatitude}}"
+     scale="{{scale}}"
+     markers="{{markers}}"
+     bindmarkertap="onMarkerTap"
+     bindregionchange="onRegionChange"
+     show-location="{{showLocation}}"
+     enable-zoom="{{true}}"
+     enable-scroll="{{true}}">
+</map>
+
+<!-- 底部：定位按钮 + 快速标注入口 -->
+<view class="map-controls">
+  <view class="location-btn" bindtap="moveToCurrentLocation">
+    <text class="icon">📍</text>
+  </view>
+  <view class="publish-btn" bindtap="onPublish">
+    <text class="icon">✚</text>
+    <text>标注</text>
+  </view>
+</view>
+
+<!-- 点击标记后的详情弹窗 -->
+<view class="detail-popup {{showDetail ? 'show' : ''}}" 
+      bindtap="closeDetail">
+  <view class="popup-content" catchtap="stopPropagation">
+    <view class="popup-close" bindtap="closeDetail">✕</view>
+    <view class="popup-title">{{selectedPOI.name}}</view>
+    <view class="popup-address">{{selectedPOI.address}}</view>
+    <view class="popup-tags">
+      <text class="tag" wx:for="{{selectedPOI.tags}}" wx:key="index">{{item}}</text>
+    </view>
+    <view class="popup-info" wx:if="{{selectedPOI.type === 'living'}}">
+      <text>养宠许可：{{selectedPOI.petAllowed ? '✅ 允许' : '❌ 需确认'}}</text>
+      <text>投诉记录：{{selectedPOI.complaintCount || 0}}条</text>
+    </view>
+    <view class="popup-info" wx:elif="{{selectedPOI.type === 'safety'}}">
+      <text>⚠️ {{selectedPOI.description}}</text>
+      <text>核实状态：{{selectedPOI.verifyStatus}}</text>
+    </view>
+    <view class="popup-actions">
+      <button class="btn-nav" bindtap="onNavigate">去这里</button>
+      <button class="btn-report" bindtap="onReport">我要反馈</button>
+    </view>
+  </view>
+</view>
