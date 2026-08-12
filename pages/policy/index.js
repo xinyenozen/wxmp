@@ -1,60 +1,124 @@
 // pages/policy/list.js
-import { getPolicyCityList, getPolicyData } from '../../utils/mockPolicyData.js';
-
+// pages/policy/index.js
 Page({
   data: {
     currentCity: '北京',
     cityList: [],
     policyData: null,
-    // 弹窗
     showDetailModal: false,
     detailTitle: '',
-    detailContent: ''
+    detailContent: '',
+    loading: false
   },
 
   onLoad() {
-    // 获取城市列表
-    const cities = getPolicyCityList();
-    this.setData({ cityList: cities });
-    // 从缓存读取上次选择
-    const lastCity = wx.getStorageSync('currentPolicyCity') || '北京';
-    this.loadPolicy(lastCity);
+    this.loadCityList();
+  },
+
+  onShow() {
+    // 每次显示时刷新当前城市数据（可能从其他页面返回）
+    if (this.data.currentCity) {
+      this.loadPolicy(this.data.currentCity);
+    }
+  },
+
+  /**
+   * 加载所有城市列表（从数据库获取）
+   */
+  async loadCityList() {
+    try {
+      wx.showLoading({ title: '加载中...' });
+      const res = await wx.cloud.callFunction({
+        name: 'getPolicies',
+        data: { petType: '犬' }
+      });
+
+      wx.hideLoading();
+      if (res.result && res.result.code === 0) {
+        const data = res.result.data || [];
+        // 提取城市名列表（去重）
+        const cities = [...new Set(data.map(item => item.city).filter(Boolean))];
+        this.setData({ cityList: cities });
+
+        // 如果有城市列表，默认选中第一个
+        if (cities.length > 0) {
+          // 从缓存读取上次选中的城市
+          const lastCity = wx.getStorageSync('currentPolicyCity');
+          const targetCity = (lastCity && cities.includes(lastCity)) ? lastCity : cities[0];
+          this.setData({ currentCity: targetCity });
+          this.loadPolicy(targetCity);
+        } else {
+          this.setData({ policyData: null });
+        }
+      } else {
+        wx.showToast({ title: res.result?.message || '加载失败', icon: 'none' });
+      }
+    } catch (err) {
+      wx.hideLoading();
+      console.error('加载城市列表失败:', err);
+      wx.showToast({ title: '网络异常，请重试', icon: 'none' });
+    }
   },
 
   /**
    * 加载指定城市的政策数据
    */
-  loadPolicy(city) {
-    const data = getPolicyData(city);
-    if (data) {
-      //确保 bannedBreeds 是数组
-      const safeData = {
-        ...data,
-        bannedBreeds: data.bannedBreeds || []
-      };
-      this.setData({
-        currentCity: city,
-        policyData: safeData
+  async loadPolicy(city) {
+    if (!city) return;
+    this.setData({ loading: true });
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'getPolicy',
+        data: { city: city, petType: '犬' }
       });
-      wx.setStorageSync('currentPolicyCity', city);
-    } else {
-      // 如果没有数据，显示空状态
-      this.setData({
-        currentCity: city,
-        policyData: null
-      });
+
+      if (res.result && res.result.code === 0) {
+        const data = res.result.data;
+        if (data) {
+          this.setData({
+            currentCity: city,
+            policyData: data
+          });
+          wx.setStorageSync('currentPolicyCity', city);
+        } else {
+          // 该城市暂无数据
+          this.setData({
+            currentCity: city,
+            policyData: null
+          });
+        }
+      } else {
+        wx.showToast({ title: res.result?.message || '加载失败', icon: 'none' });
+        this.setData({ policyData: null });
+      }
+    } catch (err) {
+      console.error('加载政策失败:', err);
+      wx.showToast({ title: '网络异常，请重试', icon: 'none' });
+      this.setData({ policyData: null });
+    } finally {
+      this.setData({ loading: false });
     }
   },
 
-  // 供城市选择页调用的方法
+  /**
+   * 切换城市（城市选择页回调）
+   */
   setCity(cityName) {
     if (cityName && cityName !== this.data.currentCity) {
       this.loadPolicy(cityName);
     }
   },
 
-  // 点击城市选择，跳转到城市选择页
+  /**
+   * 点击城市选择
+   */
   onSelectCity() {
+    const cityNames = this.data.cityList;
+    if (cityNames.length === 0) {
+      wx.showToast({ title: '暂无城市数据', icon: 'none' });
+      return;
+    }
     wx.navigateTo({
       url: '/pages/city-select/index'
     });
@@ -73,10 +137,8 @@ Page({
 
     switch (type) {
       case 'banned':
-        //使用安全访问
-        const breeds = data.bannedBreeds || [];
-        title = `🚫 ${data.city}禁养犬种（${breeds.length}种）`;
-        content = breeds.join('、');
+        title = `🚫 ${data.city}禁养犬种（${(data.bannedBreeds || []).length}种）`;
+        content = (data.bannedBreeds || []).join('、') || '暂无数据';
         break;
       case 'area':
         title = `📍 ${data.city}限养/重点管理区域`;
@@ -84,7 +146,7 @@ Page({
         break;
       case 'process':
         title = `📝 ${data.city}登记流程与费用`;
-        content = (data.registerProcess || '') + '\n\n💰 费用标准：\n' + (data.fee || '暂无数据');
+        content = (data.registerProcess || '暂无数据') + '\n\n💰 费用标准：\n' + (data.fee || '暂无数据');
         break;
       case 'penalty':
         title = `⚖️ ${data.city}违规处罚标准`;
@@ -101,34 +163,21 @@ Page({
     });
   },
 
-  /**
-   * 关闭弹窗
-   */
   closeModal() {
     this.setData({ showDetailModal: false });
   },
 
-  /**
-   * 阻止事件冒泡
-   */
   stopPropagation() {},
 
-  /**
-   * 跳转多城市对比
-   */
   goToCompare() {
     wx.navigateTo({
       url: '/pages/policy/compare/index'
     });
   },
 
-  /**
-   * 跳转纠错反馈
-   */
   goToCorrect() {
-    const city = this.data.currentCity;
     wx.navigateTo({
-      url: `/pages/policy/correct/index?city=${encodeURIComponent(city)}`
+      url: '/pages/policy/correct/index'
     });
   }
 });

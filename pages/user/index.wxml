@@ -1,19 +1,23 @@
 <!--pages/user/index.wxml-->
 <!-- ==================== 用户信息卡片 ==================== -->
+<!-- 用户信息卡片 -->
 <view class="user-card">
-  <view class="user-info" bindtap="handleLogin">
-    <image class="avatar" src="{{userInfo.avatarUrl || 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'}}" mode="aspectFill"></image>
+  <view class="user-info">
+    <view class="avatar-wrapper">
+      <image wx:if="{{userInfo.avatarUrl}}" class="avatar" src="{{userInfo.avatarUrl}}" mode="aspectFill"></image>
+      <view wx:else class="avatar-placeholder">🐾</view>
+    </view>
     <view class="user-detail">
-      <view class="nickname">{{userInfo.nickName || '点击登录'}}</view>
+      <view class="nickname">{{userInfo.nickName || '未登录'}}</view>
       <view class="user-level">
-        <text class="level-tag">Lv.{{userLevel}}</text>
+        <text class="level-tag">Lv.{{stats.level}}</text>
         <text class="level-title">{{levelTitle}}</text>
       </view>
     </view>
-    <view class="edit-btn" wx:if="{{userInfo.nickName}}">编辑</view>
+    <view class="edit-btn" bindtap="goToEditProfile">编辑</view>
   </view>
 
-  <!-- 数据统计栏 -->
+  <!-- 统计栏 -->
   <view class="stats-bar">
     <view class="stat-item">
       <text class="stat-number">{{stats.annotations}}</text>
@@ -32,9 +36,8 @@
   </view>
 </view>
 
-<!-- ==================== 功能菜单列表 ==================== -->
+<!-- 功能菜单列表 -->
 <view class="menu-section">
-  <!-- 组1：核心功能 -->
   <view class="menu-group">
     <view class="menu-item" bindtap="goToMyAnnotations">
       <view class="menu-left">
@@ -42,7 +45,7 @@
         <text class="menu-title">我的标注</text>
       </view>
       <view class="menu-right">
-        <text class="menu-badge" wx:if="{{pendingCount > 0}}">{{pendingCount}}条待审核</text>
+        <text class="menu-badge" wx:if="{{stats.pendingCount > 0}}">{{stats.pendingCount}}条待审核</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>
@@ -63,13 +66,12 @@
         <text class="menu-title">迁徙锦囊</text>
       </view>
       <view class="menu-right">
-        <text class="menu-tag">已生成0份</text>
+        <text class="menu-tag">已生成{{stats.migrationKits || 0}}份</text>
         <text class="menu-arrow">›</text>
       </view>
     </view>
   </view>
 
-  <!-- 组2：商业与服务 -->
   <view class="menu-group">
     <view class="menu-item" bindtap="goToMerchantApply">
       <view class="menu-left">
@@ -101,8 +103,18 @@
         <text class="menu-arrow">›</text>
       </view>
     </view>
+    <view class="menu-divider"></view>
+    <view class="menu-item" bindtap="handleLogout">
+      <view class="menu-left">
+        <text class="menu-icon">🚪</text>
+        <text class="menu-title" style="color:#f44336;">退出登录</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
   </view>
 </view>
 
-<!-- ==================== 底部安全区 ==================== -->
+<!-- 底部安全区 -->
 <view class="footer-safe"></view>

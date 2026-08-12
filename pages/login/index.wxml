@@ -1,0 +1,34 @@
+<!--pages/login/index.wxml-->
+<view class="container">
+  <!-- Logo 和标题 -->
+  <view class="logo-area" bindtap="onLogoClick">
+  <!-- 方案A：改用文字图标 -->
+  <view class="logo-placeholder">🐾</view>
+  <!-- 或方案B：用网络图片 -->
+  <!-- <image class="logo" src="https://via.placeholder.com/100/FF8C42/FFFFFF?text=安宠智图" mode="aspectFit"></image> -->
+  <text class="app-name">安宠智图</text>
+  <text class="app-slogan">让每一次携宠迁徙都安心、温暖、有迹可循</text>
+</view>
+
+  <!-- 普通登录 -->
+  <view class="login-area" wx:if="{{!showAdminLogin}}">
+    <button class="login-btn" bindtap="handleWechatLogin" loading="{{loading}}">
+      <text class="btn-icon">🌱</text>
+      微信一键登录
+    </button>
+    <view class="admin-trigger" bindtap="toggleAdminLogin">管理员登录</view>
+  </view>
+
+  <!-- 管理员登录 -->
+  <view class="login-area admin-login" wx:else>
+    <view class="admin-form">
+      <input class="admin-input" placeholder="管理员账号" value="{{adminAccount}}" bindinput="onAdminAccountInput" />
+      <input class="admin-input" placeholder="管理员密码" type="password" value="{{adminPassword}}" bindinput="onAdminPasswordInput" />
+      <button class="login-btn admin-btn" bindtap="handleAdminLogin" loading="{{adminLoading}}">管理员登录</button>
+      <view class="back-trigger" bindtap="toggleAdminLogin">← 返回普通登录</view>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="footer">v1.0.0</view>
+</view>

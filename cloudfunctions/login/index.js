@@ -21,6 +21,7 @@ exports.main = async (event) => {
         city: '',
         phone: '',
         email: '',
+        isAdmin: false,
         createTime: now,
         updateTime: now
       }
@@ -33,19 +34,33 @@ exports.main = async (event) => {
         score: 0,
         annotations: 0,
         pendingCount: 0,
-        favorites: [],
+        favorites: 0,
         migrationKits: 0,
         createTime: now,
         updateTime: now
       }
       await db.collection('user_stats').add({ data: statsData })
       
+      // ✅ 修改返回格式
       return {
         code: 0,
-        message: '新用户注册成功',
-        user: { ...userData, _id: addRes._id },
-        stats: statsData,
-        isNew: true
+        data: {
+          token: 'user_' + openid + '_' + Date.now(),
+          userInfo: {
+            nickName: userData.nickName,
+            avatarUrl: userData.avatarUrl,
+            city: userData.city,
+            isAdmin: false
+          },
+          stats: {
+            level: statsData.level,
+            score: statsData.score,
+            annotations: statsData.annotations,
+            favorites: statsData.favorites,
+            pendingCount: statsData.pendingCount,
+            migrationKits: statsData.migrationKits
+          }
+        }
       }
     }
     
@@ -53,21 +68,41 @@ exports.main = async (event) => {
     const user = userRes.data[0]
     const statsRes = await db.collection('user_stats').where({ _openid: openid }).get()
     const stats = statsRes.data[0] || null
-    
+
+    // ✅ 修改返回格式
     return {
       code: 0,
-      message: '登录成功',
-      user: user,
-      stats: stats,
-      isNew: false
+      data: {
+        token: 'user_' + openid + '_' + Date.now(),
+        userInfo: {
+          nickName: user.nickName,
+          avatarUrl: user.avatarUrl,
+          city: user.city,
+          isAdmin: user.isAdmin || false
+        },
+        stats: stats ? {
+          level: stats.level || 1,
+          score: stats.score || 0,
+          annotations: stats.annotations || 0,
+          favorites: stats.favorites || 0,
+          pendingCount: stats.pendingCount || 0,
+          migrationKits: stats.migrationKits || 0
+        } : {
+          level: 1,
+          score: 0,
+          annotations: 0,
+          favorites: 0,
+          pendingCount: 0,
+          migrationKits: 0
+        }
+      }
     }
     
   } catch (err) {
     console.error('登录失败:', err)
     return {
       code: -1,
-      message: '登录失败，请重试',
-      error: err.message
+      message: err.message || '登录失败，请重试'
     }
   }
 }

@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/login/index",
     "pages/map/index",
     "pages/policy/index",
     "pages/route/index",
@@ -11,6 +12,7 @@
     "pages/city-select/index",
     "pages/poi-detail/index",
     "pages/annotations/index",
+    "pages/edit-profile/index",
     "pages/safety/list"
   ],
   "tabBar": {
