@@ -1,0 +1,234 @@
+/* pages/policy/compare/index.wxss */
+page {
+  background: #f6f7fb;
+  padding-bottom: 80px;
+}
+
+/* 顶部 */
+.header {
+  background: #fff;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.city-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.city-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: #FFF4ED;
+  border-radius: 20px;
+  color: #FF8C42;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.city-tag .remove {
+  font-size: 16px;
+  color: #FF8C42;
+  padding: 0 2px;
+}
+
+.city-tag.add {
+  background: #f0f0f0;
+  color: #666;
+  border: 1px dashed #ccc;
+}
+
+.hint {
+  font-size: 13px;
+  color: #999;
+  margin-top: 8px;
+}
+
+/* 表格 */
+.table-wrapper {
+  margin: 0 12px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 12px 0;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 100%;
+  display: table;
+  border-collapse: collapse;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+  font-size: 14px;
+  color: #333;
+  min-width: 100px;
+  max-width: 200px;
+  word-break: break-word;
+}
+
+.label-cell {
+  background: #fafafa;
+  font-weight: 600;
+  color: #555;
+  min-width: 80px;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #fafafa;
+}
+
+.header-row .cell {
+  font-weight: 700;
+  color: #1a1a1a;
+  background: #fff;
+  border-bottom: 2px solid #FF8C42;
+}
+
+.city-cell {
+  text-align: center;
+}
+
+.breed-text {
+  display: inline-block;
+}
+
+/* 空状态 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+.empty-icon {
+  font-size: 64px;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: #999;
+  margin-top: 16px;
+}
+
+/* 底部按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  gap: 12px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
+
+.btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn.share {
+  background: #FF8C42;
+  color: #fff;
+}
+
+.btn:active {
+  opacity: 0.7;
+}
+
+/* 城市选择弹窗 */
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mask.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.picker-modal {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  max-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.mask.show .picker-modal {
+  transform: translateY(0);
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.picker-header .close {
+  font-size: 20px;
+  color: #999;
+}
+
+.picker-list {
+  padding: 8px 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.picker-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f8f8f8;
+  font-size: 15px;
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+}
+
+.picker-item:active {
+  background: #f5f5f5;
+}
+
+.picker-item .check {
+  color: #FF8C42;
+  font-weight: 700;
+}

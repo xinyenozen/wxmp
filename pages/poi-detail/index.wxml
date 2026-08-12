@@ -1,0 +1,75 @@
+<!--pages/poi-detail/index.wxml-->
+<!-- 顶部图片/图标 -->
+<view class="header-banner" style="background: {{bgColor}};">
+  <view class="type-badge">{{typeLabel}}</view>
+  <text class="name">{{poi.name}}</text>
+  <text class="address">{{poi.address}}</text>
+</view>
+
+<!-- 详细信息 -->
+<view class="detail-section">
+  <!-- 标签 -->
+  <view class="tags" wx:if="{{poi.tags && poi.tags.length}}">
+    <text class="tag" wx:for="{{poi.tags}}" wx:key="index">{{item}}</text>
+  </view>
+
+  <!-- 居住类型特殊信息 -->
+  <block wx:if="{{poi.type === 'living'}}">
+    <view class="info-row">
+      <text class="info-label">养宠许可</text>
+      <text class="info-value {{poi.petAllowed ? 'allowed' : 'not-allowed'}}">
+        {{poi.petAllowed ? '✅ 允许养宠' : '❌ 需确认'}}
+      </text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">投诉记录</text>
+      <text class="info-value">{{poi.complaintCount || 0}} 条</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">用户评分</text>
+      <text class="info-value">{{poi.score || '暂无评分'}} 分</text>
+    </view>
+  </block>
+
+  <!-- 安全类型特殊信息 -->
+  <block wx:elif="{{poi.type === 'safety'}}">
+    <view class="info-row">
+      <text class="info-label">事件描述</text>
+      <text class="info-value">{{poi.description || '暂无描述'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">核实状态</text>
+      <text class="info-value verify-{{poi.verifyStatus === '已核实' ? 'passed' : 'pending'}}">
+        {{poi.verifyStatus || '待核实'}}
+      </text>
+    </view>
+    <view class="info-row" wx:if="{{poi.occurTime}}">
+      <text class="info-label">发生时间</text>
+      <text class="info-value">{{poi.occurTime}}</text>
+    </view>
+  </block>
+
+  <!-- 设施类型特殊信息 -->
+  <block wx:elif="{{poi.type === 'facility'}}">
+    <view class="info-row" wx:if="{{poi.openTime}}">
+      <text class="info-label">营业时间</text>
+      <text class="info-value">{{poi.openTime}}</text>
+    </view>
+    <view class="info-row" wx:if="{{poi.phone}}">
+      <text class="info-label">联系电话</text>
+      <text class="info-value">{{poi.phone}}</text>
+    </view>
+  </block>
+</view>
+
+<!-- 底部操作栏 -->
+<view class="bottom-actions">
+  <view class="action-btn" bindtap="onNavigate">
+    <text class="btn-icon">🧭</text>
+    <text>去这里</text>
+  </view>
+  <view class="action-btn primary" bindtap="onFeedback">
+    <text class="btn-icon">✏️</text>
+    <text>我要反馈</text>
+  </view>
+</view>

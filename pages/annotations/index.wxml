@@ -1,0 +1,87 @@
+<!--pages/annotations/index.wxml-->
+<view class="container">
+  <!-- 统计栏（不变） -->
+  <view class="stats" wx:if="{{list.length > 0}}">
+    <text class="stat-item">全部 {{list.length}}</text>
+    <text class="stat-item pending">待审核 {{pendingCount}}</text>
+    <text class="stat-item passed">已通过 {{passedCount}}</text>
+    <text class="stat-item rejected">已驳回 {{rejectedCount}}</text>
+  </view>
+
+  <!-- 列表 -->
+  <view class="list" wx:if="{{list.length > 0}}">
+    <view class="item" wx:for="{{list}}" wx:key="id" bindtap="viewDetail" data-index="{{index}}">
+      <view class="item-header">
+        <view class="type-icon">{{item.typeIcon}}</view>
+        <view class="item-title">{{item.displayName}}</view>
+        <view class="status {{item.status}}">{{item.statusText}}</view>
+      </view>
+      <!-- 地址或纠错类型 -->
+      <view class="item-address">
+        <text wx:if="{{item.itemType === 'annotation'}}">{{item.displayAddress}}</text>
+        <text wx:else>纠错：{{item.displayAddress}}</text>
+      </view>
+      <!-- 描述 -->
+      <view class="item-desc">{{item.displayDesc}}</view>
+      <view class="item-footer">
+        <text class="item-time">{{item.createTime}}</text>
+        <text class="item-type">{{item.typeLabel}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty">
+    <text class="empty-icon">📋</text>
+    <text class="empty-text">暂无记录</text>
+    <text class="empty-hint">去地图上标注或政策页纠错吧</text>
+    <button class="empty-btn" bindtap="goToMap">去标注</button>
+  </view>
+</view>
+
+<!-- 详情弹窗（需要根据 itemType 显示不同内容） -->
+<view class="mask {{showModal ? 'show' : ''}}" bindtap="closeModal">
+  <view class="modal" catchtap="stopPropagation">
+    <view class="modal-header">
+      <text class="modal-title">{{detailItem.displayName}}</text>
+      <text class="modal-close" bindtap="closeModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <!-- 公共字段 -->
+      <view class="modal-row"><text class="modal-label">类型：</text>{{detailItem.typeLabel}}</view>
+      <view class="modal-row"><text class="modal-label">状态：</text>{{detailItem.statusText}}</view>
+
+      <!-- 根据类型展示不同字段 -->
+      <block wx:if="{{detailItem.itemType === 'annotation'}}">
+        <view class="modal-row"><text class="modal-label">地址：</text>{{detailItem.displayAddress}}</view>
+        <view class="modal-row"><text class="modal-label">描述：</text>{{detailItem.displayDesc}}</view>
+        <view class="modal-row" wx:if="{{detailItem.images && detailItem.images.length}}">
+          <text class="modal-label">图片：</text>
+          <view class="modal-images">
+            <image src="{{img}}" mode="aspectFill" wx:for="{{detailItem.images}}" wx:key="index" style="width:60px;height:60px;margin-right:8px;border-radius:8px;"></image>
+          </view>
+        </view>
+      </block>
+
+      <block wx:else>
+        <view class="modal-row"><text class="modal-label">城市：</text>{{detailItem.displayCity}}</view>
+        <view class="modal-row"><text class="modal-label">错误类型：</text>{{detailItem.displayAddress}}</view>
+        <view class="modal-row"><text class="modal-label">正确内容：</text>{{detailItem.displayDesc}}</view>
+        <view class="modal-row" wx:if="{{detailItem.contact}}">
+          <text class="modal-label">联系方式：</text>{{detailItem.contact}}
+        </view>
+        <view class="modal-row" wx:if="{{detailItem.images && detailItem.images.length}}">
+          <text class="modal-label">依据图片：</text>
+          <view class="modal-images">
+            <image src="{{img}}" mode="aspectFill" wx:for="{{detailItem.images}}" wx:key="index" style="width:60px;height:60px;margin-right:8px;border-radius:8px;"></image>
+          </view>
+        </view>
+      </block>
+
+      <view class="modal-row"><text class="modal-label">提交时间：</text>{{detailItem.createTime}}</view>
+    </view>
+    <view class="modal-footer">
+      <button class="modal-btn" bindtap="closeModal">关闭</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,60 @@
+<!--pages/policy/correct/index.wxml-->
+<view class="container">
+
+<!-- ===== 城市选择 ===== -->
+<view class="field">
+  <text class="label">📌 纠错城市 <text class="required">*</text></text>
+  <view class="city-selector" bindtap="selectCity">
+    <text class="city-name">{{city || '请选择城市'}}</text>
+    <text class="arrow">›</text>
+  </view>
+</view>
+
+<!-- ===== 错误类型 ===== -->
+<view class="field">
+  <text class="label">🔍 错误类型 <text class="required">*</text></text>
+  <view class="options">
+    <view class="option {{type === 'breed' ? 'active' : ''}}" bindtap="selectType" data-type="breed">禁养犬种有误</view>
+    <view class="option {{type === 'area' ? 'active' : ''}}" bindtap="selectType" data-type="area">限养区域错误</view>
+    <view class="option {{type === 'process' ? 'active' : ''}}" bindtap="selectType" data-type="process">登记流程过时</view>
+    <view class="option {{type === 'fee' ? 'active' : ''}}" bindtap="selectType" data-type="fee">登记费用不准</view>
+    <view class="option {{type === 'penalty' ? 'active' : ''}}" bindtap="selectType" data-type="penalty">处罚标准有误</view>
+    <view class="option {{type === 'other' ? 'active' : ''}}" bindtap="selectType" data-type="other">其他错误</view>
+  </view>
+</view>
+
+<!-- ===== 正确内容 ===== -->
+<view class="field">
+  <text class="label">📝 正确内容 <text class="required">*</text></text>
+  <textarea class="content-textarea" placeholder="请详细描述正确的政策内容，如有官方文件可引用" maxlength="500" value="{{content}}" bindinput="onContentInput"/>
+  <view class="char-count">{{content.length}}/500</view>
+</view>
+
+<!-- ===== 上传依据 ===== -->
+<view class="field">
+  <text class="label">📎 上传依据（可选）</text>
+  <view class="image-grid">
+    <view class="image-item" wx:for="{{images}}" wx:key="index">
+      <image src="{{item}}" mode="aspectFill"></image>
+      <view class="image-delete" data-index="{{index}}" bindtap="deleteImage">✕</view>
+    </view>
+    <view class="image-upload" wx:if="{{images.length < 4}}" bindtap="uploadImage">
+      <text class="upload-icon">+</text>
+      <text class="upload-text">添加截图</text>
+    </view>
+  </view>
+  <view class="image-hint">最多上传4张，支持官方文件、截图等</view>
+</view>
+
+<!-- ===== 联系方式 ===== -->
+<view class="field">
+  <text class="label">📞 联系方式（选填）</text>
+  <input class="input-field" placeholder="便于我们核实后联系你（微信/手机）" value="{{contact}}" bindinput="onContactInput"/>
+</view>
+
+<!-- ===== 提交按钮 ===== -->
+<view class="submit-area">
+  <button class="submit-btn" bindtap="submitCorrection">提交纠错</button>
+</view>
+
+</view>

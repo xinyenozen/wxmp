@@ -1,0 +1,85 @@
+/* pages/route/result/index.wxss */
+page {
+  background: #f5f6fa;
+  padding: 0;
+}
+
+.container {
+  padding: 0 16px 30px;
+}
+
+/* ===== 顶部标题（紧凑） ===== */
+.header {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  padding: 20px 20px 18px;
+  border-radius: 0 0 20px 20px;
+  color: #fff;
+  margin: 0 -16px 14px;  /* 抵消容器padding，贴边显示 */
+}
+
+.from-to {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.pet-info {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
+/* ===== 卡片（间距缩小） ===== */
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.card-body {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.line {
+  display: block;
+  padding: 1px 0;
+}
+
+/* ===== 按钮 ===== */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.btn {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn.primary {
+  background: #FF8C42;
+  color: #fff;
+}
+
+.btn:active {
+  opacity: 0.7;
+}
