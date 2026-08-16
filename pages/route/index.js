@@ -1,23 +1,34 @@
 // pages/route/index.js
 // pages/route/index.js
-import { DOG_BREEDS, CAT_BREEDS, generateRoutePlan } from '../../utils/mockRouteData.js';
+import { DOG_BREEDS, CAT_BREEDS } from '../../utils/mockRouteData.js';
 
 Page({
   data: {
-    startCity: '',        // 起点城市
-    endCity: '',          // 终点城市
-    petType: '',          // '狗' 或 '猫'
-    breed: '',            // 品种
-    breedList: [],        // 当前宠物对应的品种列表
-    // 用于城市选择回调标识
-    selecting: ''         // 'start' 或 'end'
+    startCity: '',
+    endCity: '',
+    petType: '',
+    breed: '',
+    breedList: [],
+    selecting: '',
+    loading: false
   },
 
   onLoad() {
-    // 可以加载默认值等
+    // 可以从缓存恢复上次选择
+    const cached = wx.getStorageSync('routeForm') || {};
+    if (cached.startCity) this.setData({ startCity: cached.startCity });
+    if (cached.endCity) this.setData({ endCity: cached.endCity });
+    if (cached.petType) {
+      this.setData({ petType: cached.petType });
+      const breedList = cached.petType === '狗' ? DOG_BREEDS : CAT_BREEDS;
+      this.setData({ breedList });
+    }
+    if (cached.breed) this.setData({ breed: cached.breed });
   },
 
-  // 选择起点城市
+  /**
+   * 选择起点城市
+   */
   selectStartCity() {
     this.setData({ selecting: 'start' });
     wx.navigateTo({
@@ -25,7 +36,9 @@ Page({
     });
   },
 
-  // 选择终点城市
+  /**
+   * 选择终点城市
+   */
   selectEndCity() {
     this.setData({ selecting: 'end' });
     wx.navigateTo({
@@ -33,36 +46,57 @@ Page({
     });
   },
 
-  // 城市选择页回调（通过 setCity 方法）
+  /**
+   * 城市选择页回调
+   */
   setCity(cityName) {
-    if (this.data.selecting === 'start') {
+    if (!cityName) return;
+    const key = this.data.selecting;
+    if (key === 'start') {
       this.setData({ startCity: cityName, selecting: '' });
-    } else if (this.data.selecting === 'end') {
+    } else if (key === 'end') {
       this.setData({ endCity: cityName, selecting: '' });
     }
+    // 保存到缓存
+    const cached = wx.getStorageSync('routeForm') || {};
+    cached[key === 'start' ? 'startCity' : 'endCity'] = cityName;
+    wx.setStorageSync('routeForm', cached);
   },
 
-  // 选择宠物类型
+  /**
+   * 选择宠物类型
+   */
   selectPetType(e) {
     const type = e.currentTarget.dataset.type;
     const breedList = type === '狗' ? DOG_BREEDS : CAT_BREEDS;
     this.setData({
       petType: type,
       breedList: breedList,
-      breed: '' // 清空之前选择的品种
+      breed: ''
     });
+    const cached = wx.getStorageSync('routeForm') || {};
+    cached.petType = type;
+    wx.setStorageSync('routeForm', cached);
   },
 
-  // 品种选择
+  /**
+   * 品种选择
+   */
   onBreedChange(e) {
     const index = e.detail.value;
     const breed = this.data.breedList[index];
     this.setData({ breed });
+    const cached = wx.getStorageSync('routeForm') || {};
+    cached.breed = breed;
+    wx.setStorageSync('routeForm', cached);
   },
 
-  // 生成路线
-  generateRoute() {
+  /**
+   * 生成迁徙方案（调用云函数）
+   */
+  async generateRoute() {
     const { startCity, endCity, petType, breed } = this.data;
+
     // 验证
     if (!startCity || !endCity) {
       wx.showToast({ title: '请选择出发和目的城市', icon: 'none' });
@@ -81,24 +115,39 @@ Page({
       return;
     }
 
-    // 生成方案
-    const plan = generateRoutePlan(startCity, endCity, petType, breed);
-    // 携带参数跳转到结果页
-    const params = {
-      from: startCity,
-      to: endCity,
-      petType,
-      breed,
-      transport: plan.transport,
-      health: plan.healthCheck,
-      stay: plan.stayRules,
-      waypoints: plan.waypoints
-    };
-    // 通过全局或URL传参（数据较多，建议用全局）
-    const app = getApp();
-    app.globalData.routePlan = params;
-    wx.navigateTo({
-      url: '/pages/route/result/index'
-    });
+    this.setData({ loading: true });
+    wx.showLoading({ title: '生成路线中...', mask: true });
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'generateRoute',
+        data: {
+          fromCity: startCity,
+          toCity: endCity,
+          petType: petType,
+          breed: breed
+        }
+      });
+
+      wx.hideLoading();
+
+      if (res.result && res.result.code === 0) {
+        const plan = res.result.data;
+        // 存入全局，跳转结果页
+        const app = getApp();
+        app.globalData.routePlan = plan;
+        wx.navigateTo({
+          url: '/pages/route/result/index'
+        });
+      } else {
+        wx.showToast({ title: res.result?.message || '生成失败', icon: 'none' });
+      }
+    } catch (err) {
+      wx.hideLoading();
+      console.error('生成路线失败:', err);
+      wx.showToast({ title: '网络异常，请重试', icon: 'none' });
+    } finally {
+      this.setData({ loading: false });
+    }
   }
 });

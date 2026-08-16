@@ -1,0 +1,48 @@
+<!--pages/edit-profile/index.wxml-->
+<view class="container">
+  <!-- 头像 -->
+  <view class="field" bindtap="changeAvatar">
+    <view class="label">头像</view>
+    <view class="right">
+      <image wx:if="{{form.avatarUrl}}" class="avatar" src="{{form.avatarUrl}}" mode="aspectFill"></image>
+      <view wx:else class="avatar-placeholder">🐾</view>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 昵称 -->
+  <view class="field">
+    <view class="label">昵称</view>
+    <view class="right">
+      <input class="input" placeholder="请输入昵称" value="{{form.nickName}}" bindinput="onNickNameInput" />
+    </view>
+  </view>
+
+  <!-- 城市 -->
+  <view class="field" bindtap="selectCity">
+    <view class="label">城市</view>
+    <view class="right">
+      <text class="value">{{form.city || '请选择城市'}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 手机号 -->
+  <view class="field">
+    <view class="label">手机号</view>
+    <view class="right">
+      <input class="input" placeholder="请输入手机号" type="number" value="{{form.phone}}" bindinput="onPhoneInput" />
+    </view>
+  </view>
+
+  <!-- 邮箱 -->
+  <view class="field">
+    <view class="label">邮箱</view>
+    <view class="right">
+      <input class="input" placeholder="请输入邮箱" value="{{form.email}}" bindinput="onEmailInput" />
+    </view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <button class="submit-btn" bindtap="saveProfile" disabled="{{!hasChanged}}">保存修改</button>
+</view>

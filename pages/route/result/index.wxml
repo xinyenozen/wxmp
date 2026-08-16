@@ -2,14 +2,14 @@
 <view class="container">
   <!-- 标题 -->
   <view class="header">
-    <text class="from-to">{{plan.from}} → {{plan.to}}</text>
+    <text class="from-to">{{plan.fromCity}} → {{plan.toCity}}</text>
     <text class="pet-info">{{plan.petType}} · {{plan.breed}}</text>
   </view>
 
   <!-- 交通方案 -->
   <view class="card">
     <view class="card-title">🚗 交通方案</view>
-    <view class="card-body">{{plan.transport}}</view>
+    <view class="card-body">{{plan.transport || '暂无建议'}}</view>
   </view>
 
   <!-- 体检清单 -->
@@ -17,19 +17,20 @@
     <view class="card-title">💉 体检与证件清单</view>
     <view class="card-body">
       <text class="line" wx:for="{{plan.healthList}}" wx:key="index">{{item}}</text>
+      <text wx:if="{{plan.healthList.length === 0}}">暂无数据</text>
     </view>
   </view>
 
   <!-- 入住规范 -->
   <view class="card">
     <view class="card-title">🏠 目的地入住规范</view>
-    <view class="card-body">{{plan.stay}}</view>
+    <view class="card-body">{{plan.stay || '暂无数据'}}</view>
   </view>
 
   <!-- 沿途服务点 -->
   <view class="card">
     <view class="card-title">📍 沿途推荐服务点</view>
-    <view class="card-body">{{plan.waypoints}}</view>
+    <view class="card-body">{{plan.waypoints || '暂无推荐'}}</view>
   </view>
 
   <!-- 操作按钮 -->

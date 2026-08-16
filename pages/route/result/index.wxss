@@ -1,20 +1,20 @@
 /* pages/route/result/index.wxss */
 page {
-  background: #f6f7fb;
-  padding: 16px;
-  padding-bottom: 80px;
+  background: #f5f6fa;
+  padding: 0;
 }
 
 .container {
-  max-width: 100%;
+  padding: 0 16px 30px;
 }
 
+/* ===== 顶部标题（紧凑） ===== */
 .header {
   background: linear-gradient(135deg, #4CAF50, #66BB6A);
-  padding: 20px;
-  border-radius: 16px;
+  padding: 20px 20px 18px;
+  border-radius: 0 0 20px 20px;
   color: #fff;
-  margin-bottom: 16px;
+  margin: 0 -16px 14px;  /* 抵消容器padding，贴边显示 */
 }
 
 .from-to {
@@ -29,37 +29,39 @@ page {
   margin-top: 4px;
 }
 
+/* ===== 卡片（间距缩小） ===== */
 .card {
   background: #fff;
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 16px;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #1a1a1a;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .card-body {
-  font-size: 15px;
+  font-size: 14px;
   color: #444;
-  line-height: 1.8;
+  line-height: 1.7;
   white-space: pre-wrap;
 }
 
 .line {
   display: block;
-  padding: 2px 0;
+  padding: 1px 0;
 }
 
+/* ===== 按钮 ===== */
 .actions {
   display: flex;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
 .btn {

@@ -1,217 +1,204 @@
 // pages/user/index.js
-// ============================================================
-// 模拟数据（实际项目中替换为接口请求）
-// ============================================================
-const MOCK_USER = {
-  nickName: '',
-  avatarUrl: '',
-  level: 1,          // 等级从1开始，也可以设为0
-  score: 0,
-  annotations: 0,
-  favorites: 0,
-  pendingCount: 0,
-  migrationKits: 0
-};
-
-// 等级称号映射
-const LEVEL_TITLES = {
-  1: '初来乍到',
-  2: '迁徙新手',
-  3: '城市探索者',
-  4: '养宠达人',
-  5: '安宠专家'
-};
-
-// ============================================================
-// 页面逻辑
-// ============================================================
+// pages/user/index.js
 Page({
   data: {
-    // 用户信息
     userInfo: {
       nickName: '',
-      avatarUrl: ''
+      avatarUrl: '',
+      isAdmin: false
     },
-    userLevel: 1,
-    levelTitle: '初来乍到',
-    
-    // 统计数据
     stats: {
-      annotations: 0,
+      level: 1,
       score: 0,
-      favorites: 0
+      annotations: 0,
+      favorites: 0,
+      pendingCount: 0,
+      migrationKits: 0
     },
-    
-    // 待审核数量（角标）
-    pendingCount: 0
+    levelTitle: '初来乍到',
+    loading: false
   },
 
   onLoad() {
-    // 从本地缓存读取用户信息
-    this.loadUserData();
+    this.checkLoginAndLoad();
   },
 
   onShow() {
-    // 每次页面显示时刷新数据（比如从其他页面返回时）
-    this.refreshStats();
+    // 每次显示页面时刷新数据（从其他页面返回时更新）
+    this.loadUserData();
   },
 
   /**
-   * 加载用户数据（本地缓存 + 模拟）
+   * 检查登录状态并加载数据
    */
-  loadUserData() {
-    // 1. 读取缓存的用户信息
-    const cachedUser = wx.getStorageSync('userInfo');
-    
-    if (cachedUser && cachedUser.nickName) {
-      // 已有登录信息
-      this.setData({
-        userInfo: cachedUser
-      });
-    } else {
-      // 未登录：显示默认状态
-      this.setData({
-        userInfo: {
-          nickName: '',
-          avatarUrl: ''
-        }
-      });
-    }
-    
-    // 2. 加载统计数据（模拟）
-    const stats = wx.getStorageSync('userStats') || MOCK_USER;
-    this.setData({
-      userLevel: stats.level || 1,
-      levelTitle: LEVEL_TITLES[stats.level] || '初来乍到',
-      stats: {
-        annotations: stats.annotations || 0,
-        score: stats.score || 0,
-        favorites: stats.favorites || 0
-      },
-      pendingCount: stats.pendingCount || 0
-    });
-  },
-
-  /**
-   * 刷新统计数据（用于从其他页面返回时更新）
-   */
-  refreshStats() {
-    // 模拟刷新：从全局或缓存读取最新数据
-    const stats = wx.getStorageSync('userStats') || MOCK_USER;
-    // 仅更新变化的数据，不覆盖用户信息
-    this.setData({
-      userLevel: stats.level || 1,
-      levelTitle: LEVEL_TITLES[stats.level] || '初来乍到',
-      'stats.annotations': stats.annotations || 0,
-      'stats.score': stats.score || 0,
-      'stats.favorites': stats.favorites || 0,
-      pendingCount: stats.pendingCount || 0
-    });
-  },
-
-  /**
-   * 登录 / 编辑个人信息
-   */
-  handleLogin() {
-    // 如果已经登录，跳到编辑页（模拟提示）
-    if (this.data.userInfo.nickName) {
-      wx.showToast({
-        title: '编辑功能开发中',
-        icon: 'none'
-      });
+  checkLoginAndLoad() {
+    const token = wx.getStorageSync('userToken');
+    if (!token) {
+      // 未登录，跳转登录页
+      wx.reLaunch({ url: '/pages/login/index' });
       return;
     }
+    this.loadUserData();
+  },
 
-    // 未登录：调用微信授权获取用户信息
-    wx.getUserProfile({
-      desc: '用于完善个人资料',
-      success: (res) => {
-        const userInfo = res.userInfo;
-        // 保存到本地缓存
-        wx.setStorageSync('userInfo', userInfo);
-        
-        // 同步初始化统计数据
-        const defaultStats = {
-          level: 1,
-          score: 0,
-          annotations: 0,
-          favorites: 0,
-          pendingCount: 0,
-          migrationKits: 0
-        };
-        wx.setStorageSync('userStats', defaultStats);
-        
+  /**
+   * 加载用户信息（调用云函数）
+   */
+  async loadUserData() {
+    if (this.data.loading) return;
+    this.setData({ loading: true });
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'getUserInfo'
+      });
+
+      if (res.result && res.result.code === 0) {
+        const { user, stats } = res.result.data;
+        // 更新本地缓存
+        wx.setStorageSync('userInfo', user);
+        wx.setStorageSync('userStats', stats);
+
+        // 更新页面数据
         this.setData({
-          userInfo: userInfo,
-          userLevel: 1,
-          levelTitle: '初来乍到',
-          stats: {
-            annotations: 0,
-            score: 0,
-            favorites: 0
+          userInfo: {
+            nickName: user.nickName || '未命名',
+            avatarUrl: user.avatarUrl || '',
+            isAdmin: user.isAdmin || false
           },
-          pendingCount: 0
+          stats: {
+            level: stats.level || 1,
+            score: stats.score || 0,
+            annotations: stats.annotations || 0,
+            favorites: stats.favorites || 0,
+            pendingCount: stats.pendingCount || 0,
+            migrationKits: stats.migrationKits || 0
+          },
+          levelTitle: this.getLevelTitle(stats.level || 1)
         });
-        
-        wx.showToast({
-          title: '登录成功！',
-          icon: 'success'
-        });
-      },
-      fail: (err) => {
-        console.error('获取用户信息失败', err);
-        wx.showToast({
-          title: '需要授权才能登录',
-          icon: 'none'
-        });
+
+        // 更新全局数据
+        const app = getApp();
+        app.globalData.userInfo = user;
+        app.globalData.isAdmin = user.isAdmin || false;
+      } else {
+        // 如果获取失败但本地有缓存，使用缓存数据
+        const cachedUser = wx.getStorageSync('userInfo');
+        const cachedStats = wx.getStorageSync('userStats');
+        if (cachedUser && cachedStats) {
+          this.setData({
+            userInfo: {
+              nickName: cachedUser.nickName || '未命名',
+              avatarUrl: cachedUser.avatarUrl || '',
+              isAdmin: cachedUser.isAdmin || false
+            },
+            stats: {
+              level: cachedStats.level || 1,
+              score: cachedStats.score || 0,
+              annotations: cachedStats.annotations || 0,
+              favorites: cachedStats.favorites || 0,
+              pendingCount: cachedStats.pendingCount || 0,
+              migrationKits: cachedStats.migrationKits || 0
+            },
+            levelTitle: this.getLevelTitle(cachedStats.level || 1)
+          });
+        } else {
+          wx.showToast({ title: '获取用户信息失败', icon: 'none' });
+        }
       }
+    } catch (err) {
+      console.error('获取用户信息失败:', err);
+      // 降级使用缓存
+      const cachedUser = wx.getStorageSync('userInfo');
+      const cachedStats = wx.getStorageSync('userStats');
+      if (cachedUser && cachedStats) {
+        this.setData({
+          userInfo: {
+            nickName: cachedUser.nickName || '未命名',
+            avatarUrl: cachedUser.avatarUrl || '',
+            isAdmin: cachedUser.isAdmin || false
+          },
+          stats: {
+            level: cachedStats.level || 1,
+            score: cachedStats.score || 0,
+            annotations: cachedStats.annotations || 0,
+            favorites: cachedStats.favorites || 0,
+            pendingCount: cachedStats.pendingCount || 0,
+            migrationKits: cachedStats.migrationKits || 0
+          },
+          levelTitle: this.getLevelTitle(cachedStats.level || 1)
+        });
+      } else {
+        wx.showToast({ title: '网络异常，请重试', icon: 'none' });
+      }
+    } finally {
+      this.setData({ loading: false });
+    }
+  },
+
+  /**
+   * 根据等级获取称号
+   */
+  getLevelTitle(level) {
+    const map = {
+      1: '初来乍到',
+      2: '迁徙新手',
+      3: '城市探索者',
+      4: '养宠达人',
+      5: '安宠专家'
+    };
+    return map[level] || '安宠专家';
+  },
+
+  /**
+   * 跳转编辑资料
+   */
+  goToEditProfile() {
+    wx.navigateTo({
+      url: '/pages/edit-profile/index'
     });
   },
 
   /**
-   * 我的标注
+   * 我的标注（跳转列表页）
    */
   goToMyAnnotations() {
+    const pending = this.data.stats.pendingCount || 0;
+    if (pending > 0) {
+      wx.showToast({ title: `你有 ${pending} 条待审核`, icon: 'none' });
+    }
     wx.navigateTo({
       url: '/pages/annotations/index'
     });
   },
 
   /**
-   * 我的收藏
+   * 我的收藏（预留）
    */
   goToFavorites() {
-    wx.showToast({
-      title: '收藏列表开发中',
-      icon: 'none'
-    });
-    // 实际跳转：
-    // wx.navigateTo({ url: '/pages/user/favorites/favorites' });
+    wx.showToast({ title: '收藏功能开发中', icon: 'none' });
   },
 
   /**
-   * 迁徙锦囊
+   * 迁徙锦囊（预留）
    */
   goToMigrationKit() {
-    const count = this.data.stats.annotations; // 模拟数据关联
+    const count = this.data.stats.migrationKits || 0;
     wx.showModal({
       title: '🧳 迁徙锦囊',
-      content: `您已生成 ${count > 0 ? count % 5 + 1 : 0} 份迁徙方案\n\n可下载完整PDF/图片版本，方便路上查看。`,
+      content: `您已生成 ${count} 份迁徙方案\n\n可下载完整PDF/图片版本，方便路上查看。`,
       confirmText: '查看锦囊',
       cancelText: '稍后',
       success: (res) => {
         if (res.confirm) {
-          wx.showToast({
-            title: '锦囊下载功能开发中',
-            icon: 'none'
-          });
+          wx.showToast({ title: '锦囊下载功能开发中', icon: 'none' });
         }
       }
     });
   },
 
   /**
-   * 商家入驻
+   * 商家入驻（预留）
    */
   goToMerchantApply() {
     wx.showModal({
@@ -222,7 +209,7 @@ Page({
       success: (res) => {
         if (res.confirm) {
           wx.makePhoneCall({
-            phoneNumber: '400-000-0000' // 模拟客服电话
+            phoneNumber: '400-000-0000'
           });
         }
       }
@@ -230,15 +217,10 @@ Page({
   },
 
   /**
-   * 意见反馈
+   * 意见反馈（预留）
    */
   goToFeedback() {
-    wx.showToast({
-      title: '反馈页面开发中',
-      icon: 'none'
-    });
-    // 实际跳转：
-    // wx.navigateTo({ url: '/pages/user/feedback/feedback' });
+    wx.showToast({ title: '反馈页面开发中', icon: 'none' });
   },
 
   /**
@@ -250,6 +232,29 @@ Page({
       content: '安宠智图 v1.0.0\n\n让每一次携宠迁徙\n都安心、温暖、有迹可循。\n\n📧 联系：support@anpetmap.com\n©2026 安宠智图团队',
       showCancel: false,
       confirmText: '了解详情'
+    });
+  },
+
+  /**
+   * 退出登录
+   */
+  handleLogout() {
+    wx.showModal({
+      title: '提示',
+      content: '确定要退出登录吗？',
+      confirmText: '退出',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          wx.removeStorageSync('userToken');
+          wx.removeStorageSync('userInfo');
+          wx.removeStorageSync('userStats');
+          const app = getApp();
+          app.globalData.userInfo = null;
+          app.globalData.isAdmin = false;
+          wx.reLaunch({ url: '/pages/login/index' });
+        }
+      }
     });
   }
 });

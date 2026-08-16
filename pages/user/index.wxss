@@ -5,6 +5,30 @@ page {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+
+.avatar-wrapper {
+  flex-shrink: 0;
+}
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.6);
+  background: #fff;
+}
+.avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.6);
+  background: #FF8C42;
+  color: #fff;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ========== 用户信息卡片 ========== */
 .user-card {
   margin: 16px 16px 0;
