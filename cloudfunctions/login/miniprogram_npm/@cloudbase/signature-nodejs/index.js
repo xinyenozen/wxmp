@@ -4,7 +4,7 @@ var __DEFINE__ = function(modId, func, req) { var m = { exports: {}, _tempexport
 var __REQUIRE__ = function(modId, source) { if(!__MODS__[modId]) return require(source); if(!__MODS__[modId].status) { var m = __MODS__[modId].m; m._exports = m._tempexports; var desp = Object.getOwnPropertyDescriptor(m, "exports"); if (desp && desp.configurable) Object.defineProperty(m, "exports", { set: function (val) { if(typeof val === "object" && val !== m._exports) { m._exports.__proto__ = val.__proto__; Object.keys(val).forEach(function (k) { m._exports[k] = val[k]; }); } m._tempexports = val }, get: function () { return m._tempexports; } }); __MODS__[modId].status = 1; __MODS__[modId].func(__MODS__[modId].req, m, m.exports); } return __MODS__[modId].m.exports; };
 var __REQUIRE_WILDCARD__ = function(obj) { if(obj && obj.__esModule) { return obj; } else { var newObj = {}; if(obj != null) { for(var k in obj) { if (Object.prototype.hasOwnProperty.call(obj, k)) newObj[k] = obj[k]; } } newObj.default = obj; return newObj; } };
 var __REQUIRE_DEFAULT__ = function(obj) { return obj && obj.__esModule ? obj.default : obj; };
-__DEFINE__(1786090034584, function(require, module, exports) {
+__DEFINE__(1787146597147, function(require, module, exports) {
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -52,8 +52,8 @@ function sign(options) {
 }
 exports.sign = sign;
 
-}, function(modId) {var map = {"./signer":1786090034585,"./utils":1786090034586,"./keyvalue":1786090034588,"./utils.http":1786090034589,"./utils.lang":1786090034587}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1786090034585, function(require, module, exports) {
+}, function(modId) {var map = {"./signer":1787146597148,"./utils":1787146597149,"./keyvalue":1787146597151,"./utils.http":1787146597152,"./utils.lang":1787146597150}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1787146597148, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Signer = exports.signedParamsSeparator = void 0;
@@ -277,8 +277,8 @@ class Signer {
 }
 exports.Signer = Signer;
 
-}, function(modId) { var map = {"./utils":1786090034586,"./utils.lang":1786090034587,"./keyvalue":1786090034588}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1786090034586, function(require, module, exports) {
+}, function(modId) { var map = {"./utils":1787146597149,"./utils.lang":1787146597150,"./keyvalue":1787146597151}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1787146597149, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isNodeEnv = exports.sha256hmac = exports.sha256hash = exports.stringify = exports.second = exports.formateDate = void 0;
@@ -311,7 +311,7 @@ function isNodeEnv() {
 exports.isNodeEnv = isNodeEnv;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1786090034587, function(require, module, exports) {
+__DEFINE__(1787146597150, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.isPlainObject = exports.isObject = exports.isString = exports.isNumber = void 0;
@@ -333,7 +333,7 @@ function isPlainObject(v) {
 exports.isPlainObject = isPlainObject;
 
 }, function(modId) { var map = {}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1786090034588, function(require, module, exports) {
+__DEFINE__(1787146597151, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SortedKeyValue = void 0;
@@ -381,8 +381,8 @@ class SortedKeyValue {
 }
 exports.SortedKeyValue = SortedKeyValue;
 
-}, function(modId) { var map = {"./utils.lang":1786090034587}; return __REQUIRE__(map[modId], modId); })
-__DEFINE__(1786090034589, function(require, module, exports) {
+}, function(modId) { var map = {"./utils.lang":1787146597150}; return __REQUIRE__(map[modId], modId); })
+__DEFINE__(1787146597152, function(require, module, exports) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.mustUseFormdata = exports.canUseFormdata = void 0;
@@ -431,8 +431,8 @@ function mustUseFormdata(data) {
 }
 exports.mustUseFormdata = mustUseFormdata;
 
-}, function(modId) { var map = {"./utils":1786090034586,"./utils.lang":1786090034587}; return __REQUIRE__(map[modId], modId); })
-return __REQUIRE__(1786090034584);
+}, function(modId) { var map = {"./utils":1787146597149,"./utils.lang":1787146597150}; return __REQUIRE__(map[modId], modId); })
+return __REQUIRE__(1787146597147);
 })()
 //miniprogram-npm-outsideDeps=["clone","crypto","url","util","is-stream"]
 //# sourceMappingURL=index.js.map
